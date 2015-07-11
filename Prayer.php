@@ -1,5 +1,5 @@
 <?php
-
+set_time_limit(0);
 /**
  * Class Prayer
  * @link http://www.harunmemur.com
@@ -48,6 +48,29 @@ class Prayer {
             $this->setAllCitiesCode();
     }
 
+
+    /**
+     *  Tüm Şehirlerin İlçelerinin namaz vakitlerini ve detaylarını return eder.
+     * @center parametresi true olarak belirtilirse sadece merkez ilçenin kodunu verir.
+     * @only parametresi true olarak belirtilirse sadece ;
+     * ( date , imsak , gunes , ogle , ikindi , aksam , satsi , kible , enlem , boylam , kibleacisi , ulkeadi , sehiradi , kiblesaati , gunesbatis , gunesdogus) bilgilerini verir.
+     * @access public
+     * @return array
+     */
+    public function getAllPrayerTimes($center=false,$only = true)
+    {
+        $allTimes = array();
+        $allCityCode = $this->getAllCitiesCode();
+        
+        foreach ($allCityCode as $c_value => $c_key) {
+            foreach ($this->getDistrictCode($c_key, $center) as $t_value => $t_key) {
+                $allTimes[$c_value][$t_value] = $this->getPrayerTimes($t_key, $only);
+            }
+        }
+        return $allTimes;
+    }
+
+    
     /**
      *  Belirtilen ülkeye ait verilen bütün şehirlerin isimlerini $citiesName property'sini set eder.
      * @access private
@@ -207,7 +230,7 @@ class Prayer {
      * @return array|bool
      */
   
-    public function getAllPrayerTimes()
+    public function getAllCityPrayerTimes()
     {
         $allCityCode = $this->getAllCitiesCode();
 
